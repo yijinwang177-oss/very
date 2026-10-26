@@ -40,7 +40,6 @@
       padding-top: var(--safe-top);
     }
 
-    /* Topbar */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: var(--primary); color: white;
@@ -70,7 +69,6 @@
       flex-shrink: 0;
     }
 
-    /* Bottom nav */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: white; border-top: 1px solid var(--border);
@@ -82,6 +80,7 @@
       display: flex; flex-direction: column; align-items: center; gap: 2px;
       padding: 6px 14px; border: none; background: none;
       color: var(--muted); font-size: 0.72rem; cursor: pointer;
+      position: relative;
     }
     .nav-item.active { color: var(--primary); font-weight: 600; }
     .nav-item .icon { font-size: 1.3rem; line-height: 1; }
@@ -90,7 +89,6 @@
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
 
-    /* Today */
     .today-header {
       background: linear-gradient(135deg, var(--primary), var(--primary-light));
       color: white; border-radius: var(--radius);
@@ -135,13 +133,26 @@
     .empty-state { text-align: center; padding: 40px 16px; color: var(--muted); }
     .empty-state .emoji { font-size: 2.3rem; margin-bottom: 10px; }
 
-    /* Plan list */
-    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 14px; }
+    @media (min-width: 420px) {
+      .stats-grid { grid-template-columns: repeat(4,1fr); }
+    }
     .stat-box {
       background: var(--card); border-radius: 12px; padding: 12px 6px;
       text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+      border: 1.5px solid transparent;
+    }
+    .stat-box.clickable:active { transform: scale(0.97); }
+    .stat-box.clickable:hover { border-color: var(--primary); }
+    .stat-box.active-filter {
+      border-color: var(--primary);
+      background: #eef2ff;
+      box-shadow: 0 0 0 2px rgba(30,58,95,0.12);
     }
     .stat-box .num { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+    .stat-box .num.accent { color: var(--accent); }
+    .stat-box .num.success { color: var(--success); }
     .stat-box .lbl { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
 
     .section-title {
@@ -184,7 +195,6 @@
     .stage-chip.done::after { content:'✓'; font-size:0.7rem; color:var(--success); font-weight:700; margin-top:1px; }
     .stage-chip.empty .date { color: #cbd5e1; font-weight: 400; }
 
-    /* Settings / Cards */
     .card {
       background: var(--card); border-radius: var(--radius);
       padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
@@ -224,7 +234,6 @@
     }
     .fab:active { transform: scale(0.92); }
 
-    /* Plan manage list */
     .plan-item {
       display: flex; align-items: center; gap: 10px;
       padding: 12px; background: #f8fafc; border-radius: 10px;
@@ -234,7 +243,6 @@
     .plan-item .plan-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
     .plan-item .plan-count { font-size: 0.75rem; color: var(--muted); }
 
-    /* Install banner */
     .install-banner {
       background: linear-gradient(135deg, #312e81, #1e3a5f);
       color: white; border-radius: var(--radius);
@@ -245,7 +253,6 @@
     .install-banner p { font-size: 0.85rem; margin-bottom: 10px; line-height: 1.5; }
     .install-banner .btn { background: white; color: var(--primary); }
 
-    /* Notification status */
     .notif-status {
       display: flex; align-items: center; gap: 8px;
       padding: 10px 12px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 10px;
@@ -254,7 +261,6 @@
     .notif-status.denied { background: #fee2e2; color: #991b1b; }
     .notif-status.default { background: #fef3c7; color: #92400e; }
 
-    /* Progress bars */
     .progress-wrap { margin-top: 10px; }
     .progress-row { margin-bottom: 10px; }
     .progress-row:last-child { margin-bottom: 0; }
@@ -292,7 +298,6 @@
     }
     .badge-num.zero { background: #94a3b8; }
     .badge-num.green { background: var(--success); }
-    .nav-item { position: relative; }
     .nav-badge {
       position: absolute; top: 0; right: 6px;
       min-width: 16px; height: 16px; padding: 0 4px;
@@ -328,17 +333,93 @@
     }
     .study-time-total strong { color: var(--primary); }
 
-    .stats-grid { grid-template-columns: repeat(2,1fr); }
-    @media (min-width: 420px) {
-      .stats-grid { grid-template-columns: repeat(4,1fr); }
-    }
-    .stat-box .num.accent { color: var(--accent); }
-    .stat-box .num.success { color: var(--success); }
-
     .task-time {
       font-size: 0.7rem; color: var(--muted); margin-top: 2px;
     }
 
+    /* 统一可点击汇总卡片 */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .summary-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, background 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 78px;
+    }
+    .summary-card:active { transform: scale(0.97); }
+    .summary-card.active {
+      border-color: var(--primary);
+      background: #eef2ff;
+      box-shadow: 0 0 0 2px rgba(30,58,95,0.12);
+    }
+    .summary-card .sc-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .summary-card .sc-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .summary-card .sc-num {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+    .summary-card .sc-num.accent { color: var(--accent); }
+    .summary-card .sc-num.success { color: var(--success); }
+    .summary-card .sc-hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .summary-card.learn-type { border-left: 4px solid #10b981; }
+    .summary-card.review-type { border-left: 4px solid #ea580c; }
+    .summary-card.global-type { border-left: 4px solid #6366f1; }
+
+    .filter-bar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: #eef2ff;
+      border-radius: 12px;
+      border: 1px solid #c7d2fe;
+    }
+    .filter-bar.show { display: flex; }
+    .filter-bar .fb-title {
+      flex: 1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .filter-bar .btn { width: auto; }
+
+    .plan-name-tag {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #3730a3;
+      font-size: 0.68rem;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
   </style>
 </head>
 <body>
@@ -354,24 +435,47 @@
       <p>📌 建议「添加到主屏幕」，像 App 一样使用，打卡更方便，也能更好接收提醒。</p>
       <button class="btn" onclick="showInstallGuide()">查看如何添加</button>
     </div>
-    <div class="global-stats" id="globalStats">
-      <h3>📊 总览 <span id="globalHint" style="font-weight:400;font-size:0.75rem;color:var(--muted);"></span></h3>
-      <div class="progress-row">
-        <div class="progress-label" style="color:var(--text);opacity:1;">
-          <span class="pl-title">📚 全部待学习</span>
-          <span class="pl-num" id="gLearnNum">0 / 0</span>
+
+    <div class="global-stats">
+      <h3>📊 总览 <span style="font-weight:400;font-size:0.75rem;color:var(--muted);">点击查看明细</span></h3>
+      <div class="summary-grid" id="summaryGrid">
+        <div class="summary-card learn-type" data-filter="plan-learn" onclick="setTodayFilter('plan-learn')">
+          <div class="sc-title">当前计划 · 今日待学习</div>
+          <div class="sc-row">
+            <span class="sc-num success" id="sumPlanLearn">0</span>
+            <span class="sc-hint">未完成</span>
+          </div>
         </div>
-        <div class="progress-bar learn"><i id="gLearnBar" style="width:0%"></i></div>
-      </div>
-      <div class="progress-row">
-        <div class="progress-label" style="color:var(--text);opacity:1;">
-          <span class="pl-title">🔁 全部待复习（今日）</span>
-          <span class="pl-num" id="gReviewNum">0 / 0</span>
+        <div class="summary-card review-type" data-filter="plan-review" onclick="setTodayFilter('plan-review')">
+          <div class="sc-title">当前计划 · 今日待复习</div>
+          <div class="sc-row">
+            <span class="sc-num accent" id="sumPlanReview">0</span>
+            <span class="sc-hint">未完成</span>
+          </div>
         </div>
-        <div class="progress-bar review"><i id="gReviewBar" style="width:0%"></i></div>
+        <div class="summary-card global-type learn-type" data-filter="all-learn" onclick="setTodayFilter('all-learn')">
+          <div class="sc-title">全部计划 · 今日待学习</div>
+          <div class="sc-row">
+            <span class="sc-num success" id="sumAllLearn">0</span>
+            <span class="sc-hint">跨计划</span>
+          </div>
+        </div>
+        <div class="summary-card global-type review-type" data-filter="all-review" onclick="setTodayFilter('all-review')">
+          <div class="sc-title">全部计划 · 今日待复习</div>
+          <div class="sc-row">
+            <span class="sc-num accent" id="sumAllReview">0</span>
+            <span class="sc-hint">跨计划</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="today-header">
+
+    <div class="filter-bar" id="todayFilterBar">
+      <span class="fb-title" id="todayFilterTitle">筛选中</span>
+      <button class="btn btn-ghost btn-sm" onclick="setTodayFilter(null)">清除筛选</button>
+    </div>
+
+    <div class="today-header" id="todayHeaderBlock">
       <div class="label">今日待办 · 当前计划</div>
       <div class="count" id="todayCount">0 项</div>
       <div class="sub" id="todayProgress">已完成 0 / 0</div>
@@ -399,8 +503,12 @@
   <!-- 计划内容 -->
   <div class="page" id="page-plan">
     <div class="stats-grid" id="statsGrid"></div>
+    <div class="filter-bar" id="planFilterBar">
+      <span class="fb-title" id="planFilterTitle">筛选中</span>
+      <button class="btn btn-ghost btn-sm" onclick="setPlanFilter(null)">清除筛选</button>
+    </div>
     <div class="section-title">
-      <span>全部内容</span>
+      <span id="planListTitle">全部内容</span>
       <button class="btn btn-ghost btn-sm" onclick="addNewItem()">＋ 添加</button>
     </div>
     <div id="planList"></div>
@@ -475,7 +583,7 @@
     </div>
   </div>
 
-    <nav class="bottom-nav">
+  <nav class="bottom-nav">
     <button class="nav-item active" data-page="today" onclick="switchPage('today')">
       <span class="icon">📅</span>今日
       <span class="nav-badge hide" id="navTodayBadge">0</span>
@@ -508,6 +616,10 @@
       lastNotif: {}
     };
 
+    // 筛选状态
+    let todayFilter = null; // null | 'plan-learn' | 'plan-review' | 'all-learn' | 'all-review'
+    let planFilter = null;  // null | 'learned' | 'pendingLearn' | 'pendingReview' | 'todayLeft'
+
     function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
     function loadState() {
@@ -517,12 +629,10 @@
       } catch(e) {}
       if (!state.plans) state.plans = [];
       if (!state.lastNotif) state.lastNotif = {};
-      // 兼容旧单计划数据
       if (state.items && !state.plans.length) {
         state.plans = [{ id: uid(), name: '默认计划', items: state.items, preset: state.preset || 'classic', remindTime: state.remindTime || '20:00' }];
         delete state.items;
       }
-      // 给旧计划补上 remindTime
       state.plans.forEach(function(p) {
         if (!p.remindTime) p.remindTime = '20:00';
       });
@@ -574,6 +684,8 @@
 
     function switchPlan(id) {
       state.activePlanId = id;
+      todayFilter = null;
+      planFilter = null;
       saveState();
       renderAll();
     }
@@ -584,6 +696,7 @@
       const id = uid();
       state.plans.push({ id: id, name: name.trim(), items: [], preset: 'classic', remindTime: '20:00' });
       state.activePlanId = id;
+      planFilter = null;
       saveState();
       renderAll();
       switchPage('plan');
@@ -644,7 +757,9 @@
             tasks.push({
               itemId: item.id, stageIdx: idx, name: item.name,
               stageLabel: preset.labels[idx], isFirst: idx === 0,
-              done: !!(item.checks && item.checks[idx])
+              done: !!(item.checks && item.checks[idx]),
+              planId: plan.id,
+              planName: plan.name
             });
           }
         });
@@ -653,14 +768,20 @@
       return tasks;
     }
 
+    function getAllTodayTasks() {
+      let all = [];
+      state.plans.forEach(p => {
+        all = all.concat(getTodayTasks(p));
+      });
+      all.sort((a,b) => a.done === b.done ? 0 : a.done ? 1 : -1);
+      return all;
+    }
 
     // ===== Progress & study time helpers =====
     function isItemLearned(item) {
-      // 首次学习完成 = checks[0] 为 true
       return !!(item.checks && item.checks[0]);
     }
     function getPendingLearnCount(plan) {
-      // 未设日期 或 首次阶段未完成 都算「待学习」
       let n = 0;
       (plan.items || []).forEach(item => {
         if (!item.startDate || !isItemLearned(item)) n++;
@@ -668,7 +789,6 @@
       return n;
     }
     function getPendingReviewCount(plan) {
-      // 今日非首次的未完成复习
       return getTodayTasks(plan).filter(t => !t.isFirst && !t.done).length;
     }
     function getTodayLearnCount(plan) {
@@ -682,6 +802,14 @@
     }
     function getTodayReviewDone(plan) {
       return getTodayTasks(plan).filter(t => !t.isFirst && t.done).length;
+    }
+    /** 当前计划：今日待学习未完成数（首次且未完成） */
+    function getPlanTodayLearnLeft(plan) {
+      return getTodayTasks(plan).filter(t => t.isFirst && !t.done).length;
+    }
+    /** 当前计划：今日待复习未完成数 */
+    function getPlanTodayReviewLeft(plan) {
+      return getTodayTasks(plan).filter(t => !t.isFirst && !t.done).length;
     }
     function formatMinutes(m) {
       m = Number(m) || 0;
@@ -713,83 +841,148 @@
       const el = document.getElementById(id);
       if (el) el.textContent = text;
     }
+
     function updateNavBadges() {
-      // 全部计划：今日未完成任务总数
-      let todayLeft = 0, unlearned = 0;
+      // 今日页：全部计划今日未完成任务总数
+      let todayLeftAll = 0;
       state.plans.forEach(p => {
-        todayLeft += getTodayTasks(p).filter(t => !t.done).length;
-        unlearned += getPendingLearnCount(p);
+        todayLeftAll += getTodayTasks(p).filter(t => !t.done).length;
       });
+      // 内容页：仅当前计划 今日待学习 + 今日待复习 未完成数
+      const plan = activePlan();
+      const planLeft = getPlanTodayLearnLeft(plan) + getPlanTodayReviewLeft(plan);
+
       const tb = document.getElementById('navTodayBadge');
       const pb = document.getElementById('navPlanBadge');
       if (tb) {
-        if (todayLeft > 0) { tb.textContent = todayLeft > 99 ? '99+' : todayLeft; tb.classList.remove('hide'); }
+        if (todayLeftAll > 0) { tb.textContent = todayLeftAll > 99 ? '99+' : todayLeftAll; tb.classList.remove('hide'); }
         else tb.classList.add('hide');
       }
       if (pb) {
-        if (unlearned > 0) { pb.textContent = unlearned > 99 ? '99+' : unlearned; pb.classList.remove('hide'); }
+        if (planLeft > 0) { pb.textContent = planLeft > 99 ? '99+' : planLeft; pb.classList.remove('hide'); }
         else pb.classList.add('hide');
       }
     }
-    function renderGlobalProgress() {
-      let gLearnPending = 0, gLearnTotal = 0;
-      let gReviewLeft = 0, gReviewTotal = 0;
+
+    // ===== 今日筛选 =====
+    function setTodayFilter(filter) {
+      if (todayFilter === filter) todayFilter = null;
+      else todayFilter = filter;
+      renderToday();
+    }
+
+    function updateSummaryCards() {
+      const plan = activePlan();
+      const planLearnLeft = getPlanTodayLearnLeft(plan);
+      const planReviewLeft = getPlanTodayReviewLeft(plan);
+
+      let allLearnLeft = 0, allReviewLeft = 0;
       state.plans.forEach(p => {
-        const items = p.items || [];
-        gLearnTotal += items.length;
-        gLearnPending += getPendingLearnCount(p);
-        const tasks = getTodayTasks(p);
-        const reviews = tasks.filter(t => !t.isFirst);
-        gReviewTotal += reviews.length;
-        gReviewLeft += reviews.filter(t => !t.done).length;
+        allLearnLeft += getPlanTodayLearnLeft(p);
+        allReviewLeft += getPlanTodayReviewLeft(p);
       });
-      const learnDone = gLearnTotal - gLearnPending;
-      const reviewDone = gReviewTotal - gReviewLeft;
-      setText('gLearnNum', learnDone + ' / ' + gLearnTotal + '（待学 ' + gLearnPending + '）');
-      setBar('gLearnBar', learnDone, gLearnTotal);
-      setText('gReviewNum', reviewDone + ' / ' + gReviewTotal + '（待复 ' + gReviewLeft + '）');
-      setBar('gReviewBar', reviewDone, gReviewTotal);
-      setText('globalHint', '跨全部计划');
+
+      setText('sumPlanLearn', planLearnLeft);
+      setText('sumPlanReview', planReviewLeft);
+      setText('sumAllLearn', allLearnLeft);
+      setText('sumAllReview', allReviewLeft);
+
+      document.querySelectorAll('#summaryGrid .summary-card').forEach(card => {
+        const f = card.getAttribute('data-filter');
+        if (f === todayFilter) card.classList.add('active');
+        else card.classList.remove('active');
+      });
     }
 
     function renderToday() {
       const plan = activePlan();
-      const tasks = getTodayTasks(plan);
-      const done = tasks.filter(t => t.done).length;
-      document.getElementById('todayCount').textContent = tasks.length + ' 项';
-      document.getElementById('todayProgress').textContent = '已完成 ' + done + ' / ' + tasks.length;
-      document.getElementById('todayPlanName').textContent = plan.name;
-
-      // 当前计划进度条：今日首次学习 / 今日复习
-      const learnTotal = getTodayLearnCount(plan);
-      const learnDone = getTodayLearnDone(plan);
-      const reviewTotal = getTodayReviewCount(plan);
-      const reviewDone = getTodayReviewDone(plan);
-      setText('pLearnNum', learnDone + ' / ' + learnTotal + (learnTotal ? '（剩 ' + (learnTotal - learnDone) + '）' : ''));
-      setBar('pLearnBar', learnDone, learnTotal);
-      setText('pReviewNum', reviewDone + ' / ' + reviewTotal + (reviewTotal ? '（剩 ' + (reviewTotal - reviewDone) + '）' : ''));
-      setBar('pReviewBar', reviewDone, reviewTotal);
-
-      renderGlobalProgress();
+      updateSummaryCards();
       updateNavBadges();
+
+      const bar = document.getElementById('todayFilterBar');
+      const header = document.getElementById('todayHeaderBlock');
+      const titleMap = {
+        'plan-learn': '当前计划 · 今日待学习',
+        'plan-review': '当前计划 · 今日待复习',
+        'all-learn': '全部计划 · 今日待学习',
+        'all-review': '全部计划 · 今日待复习'
+      };
+
+      let tasks = [];
+      let showPlanTag = false;
+
+      if (!todayFilter) {
+        bar.classList.remove('show');
+        header.style.display = '';
+        tasks = getTodayTasks(plan);
+        const done = tasks.filter(t => t.done).length;
+        document.getElementById('todayCount').textContent = tasks.length + ' 项';
+        document.getElementById('todayProgress').textContent = '已完成 ' + done + ' / ' + tasks.length;
+        document.getElementById('todayPlanName').textContent = plan.name;
+
+        const learnTotal = getTodayLearnCount(plan);
+        const learnDone = getTodayLearnDone(plan);
+        const reviewTotal = getTodayReviewCount(plan);
+        const reviewDone = getTodayReviewDone(plan);
+        setText('pLearnNum', learnDone + ' / ' + learnTotal + (learnTotal ? '（剩 ' + (learnTotal - learnDone) + '）' : ''));
+        setBar('pLearnBar', learnDone, learnTotal);
+        setText('pReviewNum', reviewDone + ' / ' + reviewTotal + (reviewTotal ? '（剩 ' + (reviewTotal - reviewDone) + '）' : ''));
+        setBar('pReviewBar', reviewDone, reviewTotal);
+      } else {
+        bar.classList.add('show');
+        document.getElementById('todayFilterTitle').textContent = titleMap[todayFilter] || '筛选';
+        header.style.display = 'none';
+
+        if (todayFilter === 'plan-learn') {
+          tasks = getTodayTasks(plan).filter(t => t.isFirst);
+        } else if (todayFilter === 'plan-review') {
+          tasks = getTodayTasks(plan).filter(t => !t.isFirst);
+        } else if (todayFilter === 'all-learn') {
+          tasks = getAllTodayTasks().filter(t => t.isFirst);
+          showPlanTag = true;
+        } else if (todayFilter === 'all-review') {
+          tasks = getAllTodayTasks().filter(t => !t.isFirst);
+          showPlanTag = true;
+        }
+      }
 
       const list = document.getElementById('todayList');
       if (!tasks.length) {
-        list.innerHTML = '<div class="empty-state"><div class="emoji">🎉</div><div>今日「' + escapeHtml(plan.name) + '」没有待办</div><div style="font-size:0.82rem;margin-top:6px;">去「内容」页添加或设置日期</div></div>';
+        const emptyMsg = todayFilter
+          ? '该筛选下没有项目'
+          : ('今日「' + escapeHtml(plan.name) + '」没有待办');
+        list.innerHTML = '<div class="empty-state"><div class="emoji">🎉</div><div>' + emptyMsg + '</div>' +
+          (!todayFilter ? '<div style="font-size:0.82rem;margin-top:6px;">去「内容」页添加或设置日期</div>' : '') +
+          '</div>';
         return;
       }
-      const itemsMap = {};
-      (plan.items || []).forEach(it => { itemsMap[it.id] = it; });
+
+      // 构建 item 查找（跨计划）
+      const itemLookup = {};
+      state.plans.forEach(p => {
+        (p.items || []).forEach(it => { itemLookup[it.id] = it; });
+      });
+
       list.innerHTML = tasks.map(t => {
-        const mins = itemStudyMinutes(itemsMap[t.itemId] || {});
+        const mins = itemStudyMinutes(itemLookup[t.itemId] || {});
+        const planTag = showPlanTag
+          ? '<span class="plan-name-tag">' + escapeHtml(t.planName || '') + '</span>'
+          : '';
         return '<div class="task-card' + (t.done ? ' done' : '') + '">' +
-          '<button class="check-btn' + (t.done ? ' checked' : '') + '" onclick="toggleCheck(\'' + t.itemId + '\',' + t.stageIdx + ',event)">' + (t.done ? '✓' : '') + '</button>' +
+          '<button class="check-btn' + (t.done ? ' checked' : '') + '" onclick="toggleCheck(\'' + t.itemId + '\',' + t.stageIdx + ',event,\'' + (t.planId || '') + '\')">' + (t.done ? '✓' : '') + '</button>' +
           '<div class="task-info">' +
-            '<div class="task-title">' + escapeHtml(t.name || '未命名') + '</div>' +
+            '<div class="task-title">' + planTag + escapeHtml(t.name || '未命名') + '</div>' +
             '<div class="task-meta"><span class="task-stage ' + (t.isFirst ? 'stage-I' : 'stage-review') + '">' + t.stageLabel + '</span>' + (t.isFirst ? '首次学习' : '复习') + '</div>' +
             (mins ? '<div class="task-time">累计学习 ' + formatMinutes(mins) + '</div>' : '') +
           '</div></div>';
       }).join('');
+    }
+
+    // ===== 内容页筛选 =====
+    function setPlanFilter(filter) {
+      if (planFilter === filter) planFilter = null;
+      else planFilter = filter;
+      renderPlanContent();
     }
 
     function renderPlanContent() {
@@ -807,25 +1000,64 @@
       const pendingReview = getPendingReviewCount(plan);
       const learned = items.length - pendingLearn;
 
+      const activeCls = function(f) {
+        return planFilter === f ? ' active-filter' : '';
+      };
+
       document.getElementById('statsGrid').innerHTML =
         '<div class="stat-box"><div class="num">' + items.length + '</div><div class="lbl">总内容</div></div>' +
-        '<div class="stat-box"><div class="num success">' + learned + '</div><div class="lbl">已学习</div></div>' +
-        '<div class="stat-box"><div class="num accent">' + pendingLearn + '</div><div class="lbl">待学习</div></div>' +
-        '<div class="stat-box"><div class="num accent">' + pendingReview + '</div><div class="lbl">今日待复习</div></div>' +
+        '<div class="stat-box clickable' + activeCls('learned') + '" onclick="setPlanFilter(\'learned\')"><div class="num success">' + learned + '</div><div class="lbl">已学习</div></div>' +
+        '<div class="stat-box clickable' + activeCls('pendingLearn') + '" onclick="setPlanFilter(\'pendingLearn\')"><div class="num accent">' + pendingLearn + '</div><div class="lbl">待学习</div></div>' +
+        '<div class="stat-box clickable' + activeCls('pendingReview') + '" onclick="setPlanFilter(\'pendingReview\')"><div class="num accent">' + pendingReview + '</div><div class="lbl">今日待复习</div></div>' +
         '<div class="stat-box"><div class="num">' + doneStages + '</div><div class="lbl">已打卡次数</div></div>' +
-        '<div class="stat-box"><div class="num">' + todayLeft + '</div><div class="lbl">今日剩余</div></div>' +
+        '<div class="stat-box clickable' + activeCls('todayLeft') + '" onclick="setPlanFilter(\'todayLeft\')"><div class="num">' + todayLeft + '</div><div class="lbl">今日剩余</div></div>' +
         '<div class="stat-box" style="grid-column: span 2;"><div class="num" style="font-size:1.05rem;">' + formatMinutes(totalStudy) + '</div><div class="lbl">本计划累计学习时长</div></div>';
 
       updateNavBadges();
 
+      const bar = document.getElementById('planFilterBar');
+      const titleMap = {
+        learned: '已学习',
+        pendingLearn: '待学习',
+        pendingReview: '今日待复习',
+        todayLeft: '今日剩余'
+      };
+      if (planFilter) {
+        bar.classList.add('show');
+        document.getElementById('planFilterTitle').textContent = '筛选：' + (titleMap[planFilter] || '');
+        document.getElementById('planListTitle').textContent = titleMap[planFilter] || '全部内容';
+      } else {
+        bar.classList.remove('show');
+        document.getElementById('planListTitle').textContent = '全部内容';
+      }
+
+      // 过滤 items
+      let displayItems = items.slice();
+      if (planFilter === 'learned') {
+        displayItems = items.filter(it => it.startDate && isItemLearned(it));
+      } else if (planFilter === 'pendingLearn') {
+        displayItems = items.filter(it => !it.startDate || !isItemLearned(it));
+      } else if (planFilter === 'pendingReview') {
+        const reviewIds = new Set(todayTasks.filter(t => !t.isFirst && !t.done).map(t => t.itemId));
+        displayItems = items.filter(it => reviewIds.has(it.id));
+      } else if (planFilter === 'todayLeft') {
+        const leftIds = new Set(todayTasks.filter(t => !t.done).map(t => t.itemId));
+        displayItems = items.filter(it => leftIds.has(it.id));
+      }
+
       const list = document.getElementById('planList');
-      if (!items.length) {
-        list.innerHTML = '<div class="empty-state"><div class="emoji">📝</div><div>「' + escapeHtml(plan.name) + '」还没有内容</div><div style="font-size:0.82rem;margin-top:6px;">点击右下角 ＋ 添加，或去设置批量导入</div></div>';
+      if (!displayItems.length) {
+        const emptyMsg = planFilter
+          ? '该筛选下没有项目'
+          : ('「' + escapeHtml(plan.name) + '」还没有内容');
+        list.innerHTML = '<div class="empty-state"><div class="emoji">📝</div><div>' + emptyMsg + '</div>' +
+          (!planFilter ? '<div style="font-size:0.82rem;margin-top:6px;">点击右下角 ＋ 添加，或去设置批量导入</div>' : '') +
+          '</div>';
         return;
       }
 
       const today = todayStr();
-      list.innerHTML = items.map(item => {
+      list.innerHTML = displayItems.map(item => {
         const preset = getPreset(item.preset || plan.preset);
         const chips = preset.intervals.map((offset, idx) => {
           const due = item.startDate ? addDaysISO(item.startDate, offset) : null;
@@ -858,9 +1090,10 @@
     }
 
     // ===== Actions =====
-    function toggleCheck(itemId, stageIdx, ev) {
+    function toggleCheck(itemId, stageIdx, ev, planId) {
       if (ev) ev.stopPropagation();
-      const plan = activePlan();
+      let plan = planId ? state.plans.find(p => p.id === planId) : activePlan();
+      if (!plan) plan = activePlan();
       const item = (plan.items || []).find(i => i.id === itemId);
       if (!item) return;
       const preset = getPreset(item.preset || plan.preset);
@@ -1031,7 +1264,6 @@
         const h = parseInt(parts[0], 10);
         const m = parseInt(parts[1], 10);
         const remindMinutes = h * 60 + m;
-        // 该计划提醒时间前后 90 分钟内，且今天还没提醒过这个计划
         if (Math.abs(nowMinutes - remindMinutes) > 90) return;
         if (state.lastNotif[plan.id] === today) return;
 
@@ -1117,6 +1349,8 @@
       if (!confirm('再次确认清空？')) return;
       const id = uid();
       state = { plans: [{ id: id, name: '语文计划', items: [], preset: 'classic', remindTime: '20:00' }], activePlanId: id, lastNotif: {} };
+      todayFilter = null;
+      planFilter = null;
       saveState();
       renderAll();
     }
@@ -1164,9 +1398,7 @@
       });
       maybeShowInstallBanner();
       renderAll();
-      // 延迟检查提醒，避免打扰
       setTimeout(checkAndNotify, 1500);
-      // 页面重新可见时也检查
       document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible') checkAndNotify();
       });
